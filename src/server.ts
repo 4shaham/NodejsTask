@@ -1,7 +1,10 @@
 
-import express from "express"
+import app from "./framework/config/app"
 
-const app=express()
+
+
+
+
 
 
 app.listen(4005,()=>console.log("server running"))
