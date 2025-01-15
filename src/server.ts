@@ -1,13 +1,15 @@
+import {config} from "dotenv"
+config()
 
 import app from "./framework/config/app"
 
 
+const port=process.env.PORT
 
 
 
 
-
-app.listen(4005,()=>console.log("server running"))
+app.listen(port,()=>console.log(`server running:http:localhost:${port}`))
 
 
 
