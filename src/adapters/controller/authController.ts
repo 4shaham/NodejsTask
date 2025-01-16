@@ -10,6 +10,32 @@ export default class AuthController implements IAuthController{
         this.authUseCase=authUseCase
     }
 
+   
+    /**
+     * @swagger
+     * /api/auth/login:
+     *   post:
+     *     summary: User login
+     *     tags: [Authentication]
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             type: object
+     *             properties:
+     *               email:
+     *                 type: string
+     *               password:
+     *                 type: string
+     *     responses:
+     *       200:
+     *         description: Login successful
+     *       401:
+     *         description: Invalid credentials
+     */
+
+
     async login(req:Request, res: Response,next:NextFunction): Promise<void> {
         try {
             
