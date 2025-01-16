@@ -3,6 +3,7 @@ import swaggerUi from 'swagger-ui-express';
 import swaggerJsdoc from 'swagger-jsdoc';
 
 
+
 // Swagger configuration
 const swaggerOptions = {
     definition: {
@@ -18,7 +19,7 @@ const swaggerOptions = {
             },
         ],
     },
-    apis: ['./src/adapter/controllers/**/*.ts'], // Path to your route annotations
+    apis: ['./src/adapters/controller/*.ts'], // Path to your route annotations
 };
 
 
