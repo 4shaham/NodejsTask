@@ -2,10 +2,14 @@ import {config} from "dotenv"
 config()
 
 import app from "./framework/config/app"
+import { setupSwagger } from "./framework/utils/swagger";
 
 
 const port=process.env.PORT
 
+
+// Swagger setup
+setupSwagger(app);
 
 
 
