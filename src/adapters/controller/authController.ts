@@ -10,7 +10,7 @@ export default class AuthController implements IAuthController{
         this.authUseCase=authUseCase
     }
 
-    async login(req: Request, res: Response,next:NextFunction): Promise<void> {
+    async login(req:Request, res: Response,next:NextFunction): Promise<void> {
         try {
             
             res.status(200).json({success:true})
