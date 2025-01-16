@@ -15,6 +15,7 @@ const authController=new AuthController(authUsecase)
 const authRouter=Router()
 
 
+authRouter.post("/login",authController.login.bind(authController))
 
 
 
