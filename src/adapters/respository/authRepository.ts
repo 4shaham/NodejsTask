@@ -5,8 +5,11 @@ import User from "../../framework/model/userModel";
 
 export default class AuthRepository implements IAuthRepository{
     
-   
+   private User:Model<userEntity>
 
+   constructor(user:Model<userEntity>){
+    this.User=user
+   }
 
  async getUser(email: string): Promise<null | userEntity> {
      try {

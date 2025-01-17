@@ -7,13 +7,14 @@ import JwtService from "../utils/jwtService";
 import User from "../model/userModel";
 
 import authorizationMiddleware from "../middleware/auth-middleware";
+import userEntity from "../../entity/userEntity";
 
 
 const hashingServices=new HashingServices()
 const jwtServices=new JwtService()
 
 
-const authRepository=new AuthRepository()
+const authRepository=new AuthRepository(User as any)
 const authUsecase=new AuthUsecase(authRepository,hashingServices,jwtServices)
 const authController=new AuthController(authUsecase)
 
