@@ -1,4 +1,6 @@
-import { Sequelize } from "sequelize";
+import { Sequelize } from "sequelize-typescript";
+import User from "../model/userModel";
+import Project from "../model/projectModel";
 
 
 
@@ -23,6 +25,12 @@ export  const connectDb=async()=>{
      
      await sequelize.sync({ force: false })
 }
+
+
+
+
+
+
 
 export default sequelize
 

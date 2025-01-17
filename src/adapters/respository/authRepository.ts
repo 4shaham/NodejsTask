@@ -13,12 +13,11 @@ export default class AuthRepository implements IAuthRepository{
 
  async getUser(email: string): Promise<null | userEntity> {
      try {
-        let data=await User.findOne({
-            where: {
-                email:email
-            },
-            attributes: ['id','password','email','name']
-        })
+
+        const data = await User.findOne({
+            where: { email },
+            attributes: ['id', 'password', 'email', 'name'],
+          });
 
         return data?.dataValues?data.dataValues:null
      } catch (error) {

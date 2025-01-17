@@ -1,13 +1,18 @@
+import { NextFunction, Response } from "express";
 import IProjectController from "../../interface/controllers/IProject.controller.interface";
+import IRequest from "../../interface/others/IReqeust";
 import IProjectUsecase from "../../interface/usecase/IProject.usecase.interface";
+import { StatusCode } from "../../enums/statusCode";
 
 
 export default class ProjectController implements IProjectController{
 
+    
      private projectUsecase:IProjectUsecase
       constructor(projectUsecase:IProjectUsecase){
         this.projectUsecase=projectUsecase
       }
+
 
 
 /**
@@ -32,10 +37,18 @@ export default class ProjectController implements IProjectController{
  *                 type: string
  *                 example: "Description of Project Alpha."
  *     responses:
- *       200:
+ *       202:
  *         description: Project created successfully
  *       400:
- *         description: Invalid userId or bad request
+ *         description: Invalid userId or bad request,Name and description are required fields,Project name is required.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Name and description are required fields."
  *       401:
  *         description: Unauthorized. Token is required or invalid.
  *         content:
@@ -59,6 +72,110 @@ export default class ProjectController implements IProjectController{
  */
 
 
+
+async createProject(req: IRequest, res: Response,next:NextFunction): Promise<void> {
+    try {
+        const {name,description}=req.body
+        const ownerId:number=req.userId as number
+        await this.projectUsecase.verifyCreateProject(name,description,ownerId)
+        res.status(StatusCode.created).json({message:"Project created successfully"})                
+    } catch (error) {
+         next(error)
+    }
+}
+
+
+
+
+
+
+/**
+ * @swagger
+ * /api/projects/getAll:
+ *   get:
+ *     summary: Get all projects for a user
+ *     tags: [Projects]
+ *     security:
+ *       - bearerAuth: []  # Indicates that this endpoint requires a JWT token
+ *     responses:
+ *       200:
+ *         description: Successfully fetched all projects for the user
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Projects fetched successfully."
+ *                 projects:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       projectId:
+ *                         type: string
+ *                         example: "project123"
+ *                       name:
+ *                         type: string
+ *                         example: "Hospital Management"
+ *                       description:
+ *                         type: string
+ *                         example: "A project for hospital administration."
+ *                       status:
+ *                         type: string
+ *                         example: "active"
+ *       400:
+ *         description: Bad request or invalid token
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Invalid request or token."
+ *       401:
+ *         description: Unauthorized. Token is required or invalid.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Token is required or invalid."
+ *       404:
+ *         description: No projects found for the user
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "No projects found for this user."
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Something went wrong. Please try again later."
+ */
+
+
+async getAllProject(req: IRequest, res: Response, next: NextFunction): Promise<void> {
+    try {
+
+        
+    } catch (error) {
+         next(error)
+    }
+}
 
 
 /**
@@ -136,6 +253,16 @@ export default class ProjectController implements IProjectController{
  */
 
 
+async editProject(req: IRequest, res: Response, next: NextFunction): Promise<void> {
+    try {
+
+
+        
+    } catch (error) {
+        next(error)
+    }
+}
+
 
 /**
  * @swagger
@@ -202,6 +329,14 @@ export default class ProjectController implements IProjectController{
  *                   example: "Something went wrong. Please try again later."
  */
 
+  
+async getProject(req: IRequest, res: Response, next: NextFunction): Promise<void> {
+    try {
+        
+    } catch (error) {
+        next(error)
+    }
+}
 
 
 /**
@@ -265,6 +400,176 @@ export default class ProjectController implements IProjectController{
  *                   example: "Something went wrong. Please try again later."
  */
 
+
+async deleteProject(req: IRequest, res: Response, next: NextFunction): Promise<void> {
+    try {
+        
+    } catch (error) {
+        next(error)
+    }
+}
+
+/**
+ * @swagger
+ * /api/project/addMember:
+ *   post:
+ *     summary: Add multiple users
+ *     tags: [Projects]
+ *     security:
+ *       - bearerAuth: []  # Indicates that this endpoint requires a JWT token
+ *     requestBody:
+ *       description: An array of user IDs to be added.
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               userIds:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 example: ["user123", "user456"]
+ *     responses:
+ *       200:
+ *         description: Users added successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Users added successfully."
+ *                 addedUsers:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                   example: ["user123", "user456"]
+ *       400:
+ *         description: Invalid user ID(s) or bad request
+ *       401:
+ *         description: Unauthorized. Token is required or invalid.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Token is required or invalid."
+ *       404:
+ *         description: User(s) not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "User(s) not found."
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Something went wrong. Please try again later."
+ */
+
+
+async addMember(req: IRequest, res: Response, next: NextFunction): Promise<void> {
+    
+    try {
+        
+    } catch (error) {
+         next(error)
+    }
+}
+ 
+
+/**
+ * @swagger
+ * /api/project/removeMember:
+ *   post:
+ *     summary: Remove multiple users
+ *     tags: [Projects]
+ *     security:
+ *       - bearerAuth: []  # Indicates that this endpoint requires a JWT token
+ *     requestBody:
+ *       description: An array of user IDs to be removed.
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               userIds:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 example: ["user123", "user456"]
+ *     responses:
+ *       200:
+ *         description: Users removed successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Users removed successfully."
+ *                 removedUsers:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                   example: ["user123", "user456"]
+ *       400:
+ *         description: Invalid user ID(s) or bad request
+ *       401:
+ *         description: Unauthorized. Token is required or invalid.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Token is required or invalid."
+ *       404:
+ *         description: User(s) not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "User(s) not found."
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Something went wrong. Please try again later."
+ */
+
+
+async removeMember(req: IRequest, res: Response, next: NextFunction): Promise<void> {
+    try {
+        
+    } catch (error) {
+        next(error)
+    }
+}
 
 
 

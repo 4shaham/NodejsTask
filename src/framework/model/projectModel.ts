@@ -3,20 +3,20 @@ import sequelize from "../config/db";
 
 import ProjectEntity from "../../entity/projectEntity";
 
-interface ProjectCreationAttributes extends Optional<ProjectEntity, "id"> {}
+interface ProjectCreationAttributes extends Optional<ProjectEntity, "projectId"> {}
 
-interface ProjectInstance
+ interface ProjectInstance
   extends Model<ProjectEntity, ProjectCreationAttributes>,
     ProjectEntity {}    
 
 const Project = sequelize.define<ProjectInstance>("Project",{
-  id: {
+  projectId: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,
     allowNull: false,
   },
-  title: {
+  name: {
     type: DataTypes.STRING,
     allowNull: false,
   },
