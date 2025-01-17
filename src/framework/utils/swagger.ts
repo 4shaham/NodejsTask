@@ -4,7 +4,6 @@ import swaggerJsdoc from 'swagger-jsdoc';
 
 
 
-// Swagger configuration
 const swaggerOptions = {
     definition: {
         openapi: '3.0.0',
@@ -15,17 +14,17 @@ const swaggerOptions = {
         },
         servers: [
             {
-                url: 'http://localhost:5005', // Update with your deployed URL
+                url: 'http://localhost:5005',
             },
         ],
     },
-    apis: ['./src/adapters/controller/*.ts'], // Path to your route annotations
+    apis: ['./src/adapters/controller/*.ts'], 
 };
 
 
 const swaggerDocs = swaggerJsdoc(swaggerOptions);
 
-// Function to set up Swagger
+
 export const setupSwagger = (app: Express): void => {
     app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
     console.log('Swagger Docs available at /api-docs');

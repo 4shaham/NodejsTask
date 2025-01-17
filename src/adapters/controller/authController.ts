@@ -11,6 +11,7 @@ export default class AuthController implements IAuthController{
         this.authUseCase=authUseCase
     }
 
+
    /**
  * @swagger
  * /api/auth/login:
@@ -35,6 +36,7 @@ export default class AuthController implements IAuthController{
  *         description: Invalid credentials
  */
 
+
     async login(req:Request, res: Response,next:NextFunction): Promise<void> {
         try {
             console.log(req.body)
@@ -45,7 +47,7 @@ export default class AuthController implements IAuthController{
         }
     }
 
-
+     
 
       
 
