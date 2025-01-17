@@ -22,7 +22,7 @@ projectRouter.get("/getAll",authorizationMiddleware,projectController.getAllProj
 projectRouter.put("/edit/:id",authorizationMiddleware,projectController.editProject.bind(projectController))
 projectRouter.get("/get/:id",authorizationMiddleware,projectController.getProject.bind(projectController))
 projectRouter.delete("/delete/:id",authorizationMiddleware,projectController.deleteProject.bind(projectController))
-projectRouter.post("/addMemeber",authorizationMiddleware,projectController.addMember.bind(projectController))
+projectRouter.post("/addMember/:projectId",authorizationMiddleware,projectController.addMember.bind(projectController))
 projectRouter.post("/removeMember",authorizationMiddleware,projectController.removeMember.bind(projectController))
 
 

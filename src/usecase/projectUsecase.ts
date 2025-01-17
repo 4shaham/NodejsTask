@@ -41,4 +41,38 @@ export default class ProjectUsecase implements IProjectUsecase{
     }
 
 
+    async verifyAddMemeber(addedUser:number[], projectId: number): Promise<void> {
+        try {
+            
+            if(addedUser.length==0){
+                 throw new Errors("addedUser is required",StatusCode.badRequest)
+            }
+
+            const isProject=await this.projectRepository.projectIdIsValid(projectId)
+
+            if(!isProject){
+                throw new Errors("projectId is not valid",StatusCode.badRequest)
+            }
+
+
+            for(let id of addedUser){
+                let data=await this.projectRepository.userIsValid(id)
+                if(!data){
+                    throw new Errors("UserId is not valid",StatusCode.badRequest)
+                }
+            }
+
+            for(let id of addedUser){
+                await this.projectRepository.addMembers(id,projectId)   
+            }
+
+            
+            
+
+        } catch (error) {    
+             throw error
+        }
+    }
+
+
 }

@@ -7,7 +7,7 @@ import { StatusCode } from "../../enums/statusCode";
 
 export default class ProjectController implements IProjectController{
 
-    
+
      private projectUsecase:IProjectUsecase
       constructor(projectUsecase:IProjectUsecase){
         this.projectUsecase=projectUsecase
@@ -411,12 +411,20 @@ async deleteProject(req: IRequest, res: Response, next: NextFunction): Promise<v
 
 /**
  * @swagger
- * /api/project/addMember:
+ * /api/project/addMember/{projectId}:
  *   post:
- *     summary: Add multiple users
+ *     summary: Add multiple users to a project
  *     tags: [Projects]
  *     security:
  *       - bearerAuth: []  # Indicates that this endpoint requires a JWT token
+ *     parameters:
+ *       - name: projectId
+ *         in: path
+ *         required: true
+ *         description: The ID of the project to which users are being added
+ *         schema:
+ *           type: number
+ *         example: 123
  *     requestBody:
  *       description: An array of user IDs to be added.
  *       required: true
@@ -428,8 +436,8 @@ async deleteProject(req: IRequest, res: Response, next: NextFunction): Promise<v
  *               userIds:
  *                 type: array
  *                 items:
- *                   type: string
- *                 example: ["user123", "user456"]
+ *                   type: number
+ *                 example: [123, 456]
  *     responses:
  *       200:
  *         description: Users added successfully
@@ -441,13 +449,19 @@ async deleteProject(req: IRequest, res: Response, next: NextFunction): Promise<v
  *                 message:
  *                   type: string
  *                   example: "Users added successfully."
- *                 addedUsers:
- *                   type: array
- *                   items:
- *                     type: string
- *                   example: ["user123", "user456"]
  *       400:
- *         description: Invalid user ID(s) or bad request
+ *         description: Invalid request. This can be due to:
+ *           - Missing user IDs
+ *           - Invalid project ID
+ *           - Invalid user ID(s)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "addedUser is required"  # or "projectId is not valid", "UserId is not valid"
  *       401:
  *         description: Unauthorized. Token is required or invalid.
  *         content:
@@ -458,16 +472,6 @@ async deleteProject(req: IRequest, res: Response, next: NextFunction): Promise<v
  *                 error:
  *                   type: string
  *                   example: "Token is required or invalid."
- *       404:
- *         description: User(s) not found
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: "User(s) not found."
  *       500:
  *         description: Internal server error
  *         content:
@@ -476,14 +480,20 @@ async deleteProject(req: IRequest, res: Response, next: NextFunction): Promise<v
  *               type: object
  *               properties:
  *                 error:
- *                   type: string
+ *                   type: st   ring
  *                   example: "Something went wrong. Please try again later."
  */
 
 
+
 async addMember(req: IRequest, res: Response, next: NextFunction): Promise<void> {
     
-    try {
+    try{
+
+        const projectId=parseInt(req.params.projectId)
+        const {userIds}=req.body
+        await this.projectUsecase.verifyAddMemeber(userIds,projectId)
+        res.status(StatusCode.success).json({message:" Users added successfully"})
         
     } catch (error) {
          next(error)
