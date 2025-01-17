@@ -15,6 +15,10 @@ const taskController=new TaskController(taskUsecase)
 const taskRouter=Router()
 
 
+taskRouter.post("/add",taskController.addTask.bind(taskController))
+
+
+
 
 
 

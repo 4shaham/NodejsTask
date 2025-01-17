@@ -1,15 +1,23 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import sequelize from "../config/db";
-import TaskEntity from "../../entity/taskEntity";
 
-interface TaskCreationAttributes extends Optional<TaskEntity, "id"> {}
+import Project from "./projectModel";  // Ensure this import is correct
+
+interface TaskAttributes {
+  taskId: number;
+  title: string;
+  status: string;
+  projectId: number;
+}
+
+interface TaskCreationAttributes extends Optional<TaskAttributes, "taskId"> {}
 
 interface TaskInstance
-  extends Model<TaskEntity, TaskCreationAttributes>,
-    TaskEntity {}
+  extends Model<TaskAttributes, TaskCreationAttributes>,
+    TaskAttributes {}
 
 const Task = sequelize.define<TaskInstance>("Task", {
-  id: {
+  taskId: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,
@@ -19,26 +27,31 @@ const Task = sequelize.define<TaskInstance>("Task", {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  description: {
-    type: DataTypes.TEXT,
-    allowNull: true,
-  },
   status: {
     type: DataTypes.ENUM("To Do", "In Progress", "Done"),
-    allowNull: false,
     defaultValue: "To Do",
   },
   projectId: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: "Projects",
-      key: "id",
+      model: "projects", 
+      key: "projectId",
     },
   },
 }, {
   tableName: "tasks",
   timestamps: true,
 });
+
+// Task.belongsTo(sequelize.models.Project, {
+//   foreignKey: "projectId",
+//    id: "project",
+// });
+
+// Task.hasOne(Project,{
+//     sourceKey:'id',
+//     foreignKey: 'projectId',
+// })
 
 export default Task;

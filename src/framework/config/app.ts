@@ -8,6 +8,7 @@ import projectRouter from "../routes/projectRoutes"
 
 import errorHandlerMiddleware from "../middleware/errorHandlingMiddleware"
 import middleware404 from "../middleware/404ErrorhandlingMiddleware"
+import taskRouter from "../routes/taskRoutes"
 
 const app=express()
 
@@ -22,6 +23,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use("/api/auth",authRouter)
 
 app.use("/api/project",projectRouter)
+
+app.use("/api/task",taskRouter)
 
 app.use(errorHandlerMiddleware)
 

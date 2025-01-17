@@ -32,6 +32,7 @@ export  const connectDb=async()=>{
 
 
 
+
 export default sequelize
 
 

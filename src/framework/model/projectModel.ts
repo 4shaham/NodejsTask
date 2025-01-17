@@ -2,14 +2,16 @@ import { DataTypes, Model, Optional } from "sequelize";
 import sequelize from "../config/db";
 
 import ProjectEntity from "../../entity/projectEntity";
+import Task from "./taskModel";  // Make sure this import is correct
+
 
 interface ProjectCreationAttributes extends Optional<ProjectEntity, "projectId"> {}
 
- interface ProjectInstance
+interface ProjectInstance
   extends Model<ProjectEntity, ProjectCreationAttributes>,
-    ProjectEntity {}    
+    ProjectEntity {}
 
-const Project = sequelize.define<ProjectInstance>("Project",{
+const Project = sequelize.define<ProjectInstance>("Project", {
   projectId: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -36,5 +38,10 @@ const Project = sequelize.define<ProjectInstance>("Project",{
   tableName: "projects",
   timestamps: true,
 });
+
+// Project.hasMany(Task, {
+//   foreignKey: "projectId",
+//   as: "tasks",
+// });
 
 export default Project;

@@ -8,11 +8,11 @@ export enum TaskStatus {
   
   export default interface TaskEntity {
     id: number;
-    title: string;
-    description: string;
-    status: TaskStatus;
-    projectId: number;
-    createdAt?: Date;
-    updatedAt?: Date;
+    title:string;
+    description:string;
+    status:TaskStatus;
+    projectId:number;
+    createdAt?:Date;
+    updatedAt?:Date;
   }
   
