@@ -6,6 +6,8 @@ import HashingServices from "../utils/hasingService";
 import JwtService from "../utils/jwtService";
 import User from "../model/userModel";
 
+import authorizationMiddleware from "../middleware/auth-middleware";
+
 
 const hashingServices=new HashingServices()
 const jwtServices=new JwtService()
@@ -25,7 +27,7 @@ const authRouter=Router()
 
 authRouter.post("/login",authController.login.bind(authController))
 authRouter.post("/register",authController.register.bind(authController))
-authRouter.post("/logout",authController.logout.bind(authController))
+authRouter.post("/logout",authorizationMiddleware,authController.logout.bind(authController))
 
 
 export default authRouter

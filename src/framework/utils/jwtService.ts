@@ -4,15 +4,15 @@ import IJwtService, {
 } from "../../interface/utils/IJWTService";
 import Jwt from "jsonwebtoken";
 
-export default class JwtService implements IJwtService {
+export default class JwtService implements IJwtService{
+    
   createToken(data: tokenData): string {
     try {
       let secret: string = process.env.JWT_SECRET_key!;
-      let token = Jwt.sign(data,secret,{expiresIn:"1h"});
-      console.log(token)
+      let token = Jwt.sign(data, secret, { expiresIn: "1h" });
+      console.log(token);
       return token;
     } catch (error) {
-        console.log("shaham")
       throw error;
     }
   }
@@ -23,8 +23,8 @@ export default class JwtService implements IJwtService {
         token,
         process.env.JWT_SECRET_key!
       ) as DecodedJwt;
-      return decoded;
 
+      return decoded;
     } catch (error) {
       if (error instanceof Jwt.TokenExpiredError) {
         return null; // Token has expired
@@ -33,7 +33,5 @@ export default class JwtService implements IJwtService {
         throw new Error("JWT Verification Error");
       }
     }
-
   }
-
 }

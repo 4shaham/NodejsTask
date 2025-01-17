@@ -127,10 +127,12 @@ export default class AuthController implements IAuthController{
         try {
 
             const {email,password}=req.body
-            let token=await this.authUseCase.verifyLogin(email,password)
+            let response=await this.authUseCase.verifyLogin(email,password)
+           
 
-            if(token){
-                res.status(StatusCode.success).json({success:true,token})
+            if(response){
+                const {token}=response
+                res.status(StatusCode.success).json({message:"Login successful",token})
             }
             
         } catch (error) {
@@ -138,15 +140,15 @@ export default class AuthController implements IAuthController{
         }
     }
 
-   
-    /**
+
+  /**
  * @swagger
  * /api/auth/logout:
  *   post:
  *     summary: User logout
  *     tags: [Authentication]
  *     security:
- *       - bearerAuth: [] # Indicates JWT token is required
+ *       - bearerAuth: [] # Indicates that this endpoint requires a JWT token
  *     responses:
  *       200:
  *         description: Logout successful
@@ -157,9 +159,12 @@ export default class AuthController implements IAuthController{
  */
 
 
+
     async logout(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            
+    
+             res.status(StatusCode.success).json({message:"Logout sucessful"})
+
         } catch (error) {
              next(error)
         }
