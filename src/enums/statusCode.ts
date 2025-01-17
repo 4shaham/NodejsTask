@@ -4,5 +4,7 @@ export  enum StatusCode {
     success=200,
     UnAuthorized=401,
     notFound=404,
-    forBidden=403
+    forBidden=403,
+    created=202,
+    conflict=409
 }
