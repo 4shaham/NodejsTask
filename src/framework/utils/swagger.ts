@@ -14,7 +14,7 @@ const swaggerOptions = {
         },
         servers: [
             {
-                url: 'http://localhost:5005',
+                url:process.env.HOSTURL,
             },
         ],
         components: {
