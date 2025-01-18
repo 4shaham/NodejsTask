@@ -6,5 +6,5 @@ export default interface IProjectUsecase{
    verifyRemoveMember(userId:number[],projectId:number,id:number):Promise<void>
    getAllProjectUsecase(userId:number):Promise<any>
    verifyEditProject(projectId:number,name:string,description:string,userId:number):Promise<void>
-
+   verifyDeleteProject(projectId:number,userId:number):Promise<void>
 }

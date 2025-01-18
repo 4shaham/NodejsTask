@@ -20,8 +20,8 @@ const projectRouter=Router()
 projectRouter.post("/add",authorizationMiddleware,projectController.createProject.bind(projectController)) // completed
 projectRouter.get("/getAll",authorizationMiddleware,projectController.getAllProject.bind(projectController)) // complete
 projectRouter.put("/edit/:projectId",authorizationMiddleware,projectController.editProject.bind(projectController))//completed
-projectRouter.get("/get/:id",authorizationMiddleware,projectController.getProject.bind(projectController))
-projectRouter.delete("/delete/:id",authorizationMiddleware,projectController.deleteProject.bind(projectController)) 
+// projectRouter.get("/get/:id",authorizationMiddleware,projectController.getProject.bind(projectController))
+projectRouter.delete("/delete/:projectId",authorizationMiddleware,projectController.deleteProject.bind(projectController)) //completed
 projectRouter.post("/addMember/:projectId",authorizationMiddleware,projectController.addMember.bind(projectController)) // completed
 projectRouter.delete("/removeMember/:ProjectId",authorizationMiddleware,projectController.removeMember.bind(projectController)) // completed
 

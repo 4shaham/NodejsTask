@@ -14,9 +14,10 @@ const swaggerOptions = {
         },
         servers: [
             {
-                url:process.env.HOSTURL,
+                url:process.env.HOSTURL
+                // url:'http://localhost:5005' 
             },
-        ],
+        ],  
         components: {
             securitySchemes: {
               bearerAuth: {
@@ -25,7 +26,7 @@ const swaggerOptions = {
                 bearerFormat: 'JWT', // Optional, clarifies the type of token expected
               },
             },
-          },
+          },         
           security: [
             {
               bearerAuth: [],

@@ -1,6 +1,8 @@
 import { Sequelize } from "sequelize-typescript";
 import User from "../model/userModel";
 import Project from "../model/projectModel";
+import { StatusCode } from "../../enums/statusCode";
+import Errors from "../../errors/errors";
 
 
 
@@ -29,16 +31,14 @@ const sequelize = new Sequelize(process.env.DB as string,process.env.USER as str
 
 export  const connectDb=async()=>{
 
-     
-    sequelize.authenticate().then(() => {
-        console.log('Connection has been established successfully.');
-        
-     }).catch((error) => {
-        console.error('Unable to connect to the database: ', error);
-     });
-     
-    
-     await sequelize.sync({ force: false })
+   
+   try {
+      await sequelize.authenticate()
+      await sequelize.sync({ force: false })
+   } catch (error) {
+       throw new Errors("Database connection Error",StatusCode.internalServer)
+   }    
+
 }
 
 

@@ -13,7 +13,7 @@ export default class ProjectController implements IProjectController{
         this.projectUsecase=projectUsecase
       }
 
-
+   
 
 /**
  * @swagger
@@ -122,9 +122,6 @@ async createProject(req: IRequest, res: Response,next:NextFunction): Promise<voi
  *                       description:
  *                         type: string
  *                         example: "A project for hospital administration."
- *                       status:
- *                         type: string
- *                         example: "active"
  *       400:
  *         description: Bad request or invalid token
  *         content:
@@ -173,8 +170,8 @@ async getAllProject(req: IRequest, res: Response, next: NextFunction): Promise<v
 
 
         const userId=Number(req.userId) 
-        await this.projectUsecase.getAllProjectUsecase(userId)
-        
+        const project=await this.projectUsecase.getAllProjectUsecase(userId)
+        res.status(StatusCode.success).json({message:"Projects fetched successfully",projects:project})
 
         
     } catch (error) {
@@ -298,91 +295,17 @@ async editProject(req: IRequest, res: Response, next: NextFunction): Promise<voi
 }
 
 
-/**
- * @swagger
- * /api/project/get/{id}:
- *   get:
- *     summary: Get project details
- *     tags: [Projects]
- *     security:
- *       - bearerAuth: []  # Indicates that this endpoint requires a JWT token
- *     parameters:
- *       - name: id
- *         in: path
- *         description: ID of the project to retrieve
- *         required: true
- *         type: string
- *     responses:
- *       200:
- *         description: Project details retrieved successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 id:
- *                   type: string
- *                   example: "12345"
- *                 name:
- *                   type: string
- *                   example: "Project Alpha"
- *                 description:
- *                   type: string
- *                   example: "Description of Project Alpha."
- *       400:
- *         description: Invalid project ID or bad request
- *       401:
- *         description: Unauthorized. Token is required or invalid.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: "Token is required or invalid."
- *       404:
- *         description: Project not found
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: "Project not found."
- *       500:
- *         description: Internal server error
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: "Something went wrong. Please try again later."
- */
-
-  
-async getProject(req: IRequest, res: Response, next: NextFunction): Promise<void> {
-    try {
-        
-    } catch (error) {
-        next(error)
-    }
-}
-
 
 /**
  * @swagger
- * /api/project/delete/{id}:
+ * /api/project/delete/{projectId}:
  *   delete:
  *     summary: Delete a project
  *     tags: [Projects]
  *     security:
  *       - bearerAuth: []  # Indicates that this endpoint requires a JWT token
  *     parameters:
- *       - name: id
+ *       - name: projectId
  *         in: path
  *         description: ID of the project to delete
  *         required: true
@@ -437,6 +360,11 @@ async getProject(req: IRequest, res: Response, next: NextFunction): Promise<void
 
 async deleteProject(req: IRequest, res: Response, next: NextFunction): Promise<void> {
     try {
+          
+        const projectId:number=Number(req.params.projectId)
+        const userId:number=Number(req.userId)
+        await this.projectUsecase.verifyDeleteProject(projectId,userId)
+        res.status(StatusCode.success).json({message:"Project deleted successfully"})
         
     } catch (error) {
         next(error)
@@ -446,9 +374,9 @@ async deleteProject(req: IRequest, res: Response, next: NextFunction): Promise<v
 
 /**
  * @swagger
- * /api/project/{projectId}/members:
- *   delete:
- *     summary: Remove multiple users from a project
+ * /api/project/addMember/{projectId}:
+ *   post:
+ *     summary: Add multiple users to a project
  *     tags: [Projects]
  *     security:
  *       - bearerAuth: []  # Indicates that this endpoint requires a JWT token
@@ -456,12 +384,12 @@ async deleteProject(req: IRequest, res: Response, next: NextFunction): Promise<v
  *       - name: projectId
  *         in: path
  *         required: true
- *         description: The ID of the project from which users are being removed
+ *         description: The ID of the project to which users are being added
  *         schema:
  *           type: string  # Assuming projectId is a string. Change if it's a number.
  *         example: "sdfd123"
  *     requestBody:
- *       description: An array of user IDs to be removed from the project.
+ *       description: An array of user IDs to be added to the project.
  *       required: true
  *       content:
  *         application/json:
@@ -473,9 +401,11 @@ async deleteProject(req: IRequest, res: Response, next: NextFunction): Promise<v
  *                 items:
  *                   type: number  # Assuming userIds are numbers. Change if they're strings.
  *                 example: [123, 456]
+ *             required:
+ *               - userIds
  *     responses:
  *       200:
- *         description: Users removed successfully
+ *         description: Users added successfully
  *         content:
  *           application/json:
  *             schema:
@@ -483,8 +413,8 @@ async deleteProject(req: IRequest, res: Response, next: NextFunction): Promise<v
  *               properties:
  *                 message:
  *                   type: string
- *                   example: "Users removed successfully."
- *                 removedUsers:
+ *                   example: "Users added successfully."
+ *                 addedUsers:
  *                   type: array
  *                   items:
  *                     type: number
@@ -509,6 +439,16 @@ async deleteProject(req: IRequest, res: Response, next: NextFunction): Promise<v
  *                 error:
  *                   type: string
  *                   example: "Token is required or invalid."
+ *       403:
+ *         description: Forbidden. Action not allowed.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "You are not authorized to add members to this project."
  *       404:
  *         description: User(s) not found or project not found
  *         content:
@@ -518,7 +458,7 @@ async deleteProject(req: IRequest, res: Response, next: NextFunction): Promise<v
  *               properties:
  *                 error:
  *                   type: string
- *                   example: "User(s) not found or project not found."
+ *                   example: "Project not found or some users were not found."
  *       500:
  *         description: Internal server error
  *         content:
@@ -550,17 +490,24 @@ async addMember(req: IRequest, res: Response, next: NextFunction): Promise<void>
     }
 }
  
-
 /**
  * @swagger
- * /api/project/removeMember:
- *   post:
- *     summary: Remove multiple users
+ * /api/project/removeMember/{projectId}:
+ *   delete:
+ *     summary: Remove multiple users from a project
  *     tags: [Projects]
  *     security:
- *       - bearerAuth: []  # Indicates that this endpoint requires a JWT token
+ *       - bearerAuth: []  # Requires a JWT token for authentication
+ *     parameters:
+ *       - name: projectId
+ *         in: path
+ *         required: true
+ *         description: The ID of the project from which users are being removed
+ *         schema:
+ *           type: string  # Change to "number" if projectId is numeric
+ *         example: "sdfd123"
  *     requestBody:
- *       description: An array of user IDs to be removed.
+ *       description: An array of user IDs to be removed from the project
  *       required: true
  *       content:
  *         application/json:
@@ -570,8 +517,10 @@ async addMember(req: IRequest, res: Response, next: NextFunction): Promise<void>
  *               userIds:
  *                 type: array
  *                 items:
- *                   type: string
- *                 example: ["user123", "user456"]
+ *                   type: number  # Change to "string" if userIds are strings
+ *                 example: [123, 456]
+ *             required:
+ *               - userIds
  *     responses:
  *       200:
  *         description: Users removed successfully
@@ -586,12 +535,20 @@ async addMember(req: IRequest, res: Response, next: NextFunction): Promise<void>
  *                 removedUsers:
  *                   type: array
  *                   items:
- *                     type: string
- *                   example: ["user123", "user456"]
+ *                     type: number
+ *                   example: [123, 456]
  *       400:
- *         description: Invalid user ID(s) or bad request
+ *         description: Bad Request. Invalid or missing parameters.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "User IDs are required and should be an array of numbers."
  *       401:
- *         description: Unauthorized. Token is required or invalid.
+ *         description: Unauthorized. Token is invalid or missing.
  *         content:
  *           application/json:
  *             schema:
@@ -599,9 +556,19 @@ async addMember(req: IRequest, res: Response, next: NextFunction): Promise<void>
  *               properties:
  *                 error:
  *                   type: string
- *                   example: "Token is required or invalid."
+ *                   example: "Authentication failed. Token is invalid or missing."
+ *       403:
+ *         description: Forbidden. Action not allowed.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "You are not authorized to remove members from this project."
  *       404:
- *         description: User(s) not found
+ *         description: Not Found. Resource(s) not found.
  *         content:
  *           application/json:
  *             schema:
@@ -609,9 +576,9 @@ async addMember(req: IRequest, res: Response, next: NextFunction): Promise<void>
  *               properties:
  *                 error:
  *                   type: string
- *                   example: "User(s) not found."
+ *                   example: "Project not found or some users were not found."
  *       500:
- *         description: Internal server error
+ *         description: Internal Server Error
  *         content:
  *           application/json:
  *             schema:

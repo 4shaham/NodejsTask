@@ -1,13 +1,11 @@
 export enum TaskStatus {
     Pending = 'Pending',
-    InProgress = 'InProgress',
+    InProgress = 'In Progress',
     Completed = 'Completed',
-    OnHold = 'OnHold',
-    Archived = 'Archived',
-  }
+}
   
   export default interface TaskEntity {
-    id: number;
+    taskId: number;
     title:string;
     description:string;
     status:TaskStatus;

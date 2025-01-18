@@ -11,14 +11,14 @@ interface ProjectInstance
   extends Model<ProjectEntity, ProjectCreationAttributes>,
     ProjectEntity {}
 
-const Project = sequelize.define<ProjectInstance>("Project", {
-  projectId: {
+const Project =sequelize.define<ProjectInstance>("Project", {
+  projectId:{
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,
     allowNull: false,
   },
-  name: {
+  name:{
     type: DataTypes.STRING,
     allowNull: false,
   },

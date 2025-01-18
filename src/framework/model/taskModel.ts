@@ -2,34 +2,34 @@ import { DataTypes, Model, Optional } from "sequelize";
 import sequelize from "../config/db";
 
 import Project from "./projectModel";  // Ensure this import is correct
+import TaskEntity from "../../entity/taskEntity";
 
-interface TaskAttributes {
-  taskId: number;
-  title: string;
-  status: string;
-  projectId: number;
-}
 
-interface TaskCreationAttributes extends Optional<TaskAttributes, "taskId"> {}
 
-interface TaskInstance
-  extends Model<TaskAttributes, TaskCreationAttributes>,
-    TaskAttributes {}
+interface TaskCreationAttributes extends Optional<TaskEntity,"taskId"> {}
 
-const Task = sequelize.define<TaskInstance>("Task", {
-  taskId: {
+interface TaskInstance 
+  extends Model<TaskEntity,TaskCreationAttributes>,
+    TaskEntity{}
+
+const Task = sequelize.define<TaskInstance>("Task",{
+  taskId:{
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,
     allowNull: false,
   },
-  title: {
-    type: DataTypes.STRING,
+  title:{
+    type:DataTypes.STRING,
+    allowNull: false,
+  },
+  description:{
+    type:DataTypes.STRING,
     allowNull: false,
   },
   status: {
-    type: DataTypes.ENUM("To Do", "In Progress", "Done"),
-    defaultValue: "To Do",
+    type: DataTypes.ENUM("Pending","In Progress","Completed"),
+    defaultValue: "pending",
   },
   projectId: {
     type: DataTypes.INTEGER,

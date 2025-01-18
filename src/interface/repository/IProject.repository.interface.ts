@@ -8,8 +8,9 @@ export default interface IProjectRepository {
   saveProject(name:string,description:string,ownerId:number):Promise<void>
   addMembers(userIds:number,projectId:number):Promise<void>
   removeMembers(userId:number,projectId:number):Promise<void>
-  fetchAllProjects(userId:number):Promise<any>
+  fetchAllProjects(userId:number):Promise<null|ProjectEntity[]>
   verifyOwnerOfTheProject(userId:number,projectId:number):Promise<Boolean>
   memberisExcedd(userId:number,projectId:number):Promise<Boolean>
   updateProject(name:string,description:string,projectId:number):Promise<void>
+  deleteProject(projectId:number):Promise<void>
 }

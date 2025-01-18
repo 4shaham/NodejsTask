@@ -90,7 +90,7 @@ export default class ProjectUsecase implements IProjectUsecase{
     async getAllProjectUsecase(userId: number): Promise<any> {
         try {
 
-            await this.projectRepository.fetchAllProjects(userId)
+          return await this.projectRepository.fetchAllProjects(userId)
             
         } catch (error) {
             throw error
@@ -109,7 +109,7 @@ export default class ProjectUsecase implements IProjectUsecase{
             let status=await this.projectRepository.verifyOwnerOfTheProject(id,projectId)
 
             if(status==false){
-                throw new Errors("The Owner only able to add member",StatusCode.badRequest)
+                throw new Errors("You are not the owner of this project",StatusCode.forBidden)
             }
 
             const isProject=await this.projectRepository.projectIdIsValid(projectId)
@@ -156,6 +156,34 @@ export default class ProjectUsecase implements IProjectUsecase{
         } catch (error) {
             throw error
         }
+    }
+
+
+    async verifyDeleteProject(projectId: number, userId: number): Promise<void> {
+         try {
+
+            if(!projectId){
+                 throw new Errors("projectId is required",StatusCode.badRequest)
+            }
+
+            let projectIdisValid=await this.projectRepository.projectIdIsValid(projectId)
+
+            if(!projectIdisValid){
+                 throw new Errors("project not found",StatusCode.notFound)
+            }
+
+
+            let isOwner=await this.projectRepository.verifyOwnerOfTheProject(userId,projectId)
+
+            if(!isOwner){
+                 throw new Errors("You are not the owner of this project",StatusCode.conflict)
+            }
+
+            await this.projectRepository.deleteProject(projectId)
+            
+         } catch (error) {
+              throw error
+         }
     }
 
 }

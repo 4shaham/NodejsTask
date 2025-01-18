@@ -104,10 +104,10 @@ export default class ProjectRepository implements IProjectRepository {
 
 
 
-  async fetchAllProjects(userId:number): Promise<any> {
+  async fetchAllProjects(userId:number): Promise<null|ProjectEntity[]> {
       try {
         
-        const user:any =await User.findOne({
+        const project:any =await User.findOne({
           where: { id: userId },  // Find the user by ID
           include: [
             {
@@ -117,7 +117,15 @@ export default class ProjectRepository implements IProjectRepository {
           ],
         });
 
-         console.log("daaata",user?.dataValues?.Projects) 
+      let array=project.dataValues.Projects.map((project: any) => ({
+          id: project.projectId,
+          name: project.name,
+          description: project.description
+      }))
+   
+      return array
+
+       
       } catch (error) {
         console.log("eroror",error)
          throw error
@@ -154,6 +162,19 @@ export default class ProjectRepository implements IProjectRepository {
         }
       );
       
+     } catch (error) {
+       throw error
+     }
+  }
+
+  async deleteProject(projectId: number): Promise<void> {
+     try {
+      
+      await Project.destroy({
+        where: {       
+          projectId: projectId, 
+      }})
+
      } catch (error) {
        throw error
      }
