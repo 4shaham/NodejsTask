@@ -6,15 +6,25 @@ import Project from "../model/projectModel";
 
 
 
-const sequelize = new Sequelize(
-    'ProjectManagment',  
-    'root',
-    'shaham@123',
-     {
-       host: '127.0.0.1',
-       dialect: 'mysql'
-     }
-);
+// const sequelize = new Sequelize(
+//      process.env.DB as string,  
+//      process.env.USER as string,
+//      process.env.PASSWORD as string,
+//      {
+//        host:process.env.HOST,
+//        dialect:"mysql"
+//      }
+// );
+
+
+
+const sequelize = new Sequelize(process.env.DB as string,process.env.USER as string,process.env.PASSWORD,{
+  host:process.env.HOST as string,
+  dialect: 'mysql',
+  port:3306,
+});
+
+
 
 
 export  const connectDb=async()=>{
