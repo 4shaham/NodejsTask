@@ -7,6 +7,7 @@ import ProjectEntity from "../../entity/projectEntity";
 import UserProjects from "../../framework/model/userProjectsModel";
 
 export default class ProjectRepository implements IProjectRepository {
+
   async userIsValid(id: number): Promise<null | userEntity> {
     try {
       const data = await User.findOne({
@@ -50,7 +51,9 @@ export default class ProjectRepository implements IProjectRepository {
     ownerId: number
   ): Promise<void> {
     try {
-      await Project.create({ name, description, ownerId });
+      let project=await Project.create({ name, description});
+      console.log(project.dataValues.projectId,"project after crate")
+      await UserProjects.create({userId:ownerId,projectId:project.dataValues.projectId,role:"owner"})
     } catch (error) {
       throw error;
     }
@@ -66,4 +69,95 @@ export default class ProjectRepository implements IProjectRepository {
       throw error;
     }
   }
+
+  async removeMembers(userId: number, projectId: number): Promise<void> {
+    try {
+
+      await UserProjects.destroy({
+        where: {
+          userId: userId,       
+          projectId: projectId, 
+        }})
+      
+    } catch (error) {
+       throw error
+    }
+  }
+
+
+  async verifyOwnerOfTheProject(userId: number, projectId: number): Promise<Boolean> {
+     try {
+      
+      let project=await UserProjects.findOne({
+        where: {userId,projectId},
+        attributes: ["role"],
+      });
+      
+      return project?.dataValues.role=="owner"?true:false
+     
+     }catch (error) {
+       throw error
+     }
+
+  }
+
+
+
+
+  async fetchAllProjects(userId:number): Promise<any> {
+      try {
+        
+        const user:any =await User.findOne({
+          where: { id: userId },  // Find the user by ID
+          include: [
+            {
+              model:Project,      // Include related projects
+              attributes: ['projectId','name', 'description'],  // Specify which fields to fetch from Project
+            },
+          ],
+        });
+
+         console.log("daaata",user?.dataValues?.Projects) 
+      } catch (error) {
+        console.log("eroror",error)
+         throw error
+      }
+  }
+
+
+  async memberisExcedd(userId:number, projectId:number): Promise<Boolean> {
+    try {
+      
+      let project=await UserProjects.findOne({
+        where:{userId,projectId},
+        attributes: ["role"],
+      });
+
+      return project?.dataValues.role?true:false
+      
+    } catch (error) {
+      throw error
+    }
+  }
+
+
+  async updateProject(name: string, description: string, projectId:number): Promise<void> {
+     try {
+
+      await Project.update(
+        { 
+          name, 
+          description 
+        }, 
+        { 
+          where: {projectId}
+        }
+      );
+      
+     } catch (error) {
+       throw error
+     }
+  }
+
+
 }

@@ -18,9 +18,10 @@ const authorizationMiddleware = async (
        return
     }
     const token = authHeader.split(" ")[1]; 
-    let verification = jwtService.verify(token);
+    
+    let verification =await jwtService.verify(token);
     req.userId=verification?.id 
-    req.email=verification?.email
+    req.email=verification?.email 
     next();
 
   } catch (error) {

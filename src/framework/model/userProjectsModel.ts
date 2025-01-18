@@ -21,10 +21,13 @@ const UserProjects = sequelize.define("UserProjects", {
       key: "id",  // Reference the 'id' column of the Project model
     },
   },
-}, {
-  tableName: "user_projects",  // Name of the junction table
-  timestamps: false,  // No need for timestamps in this table
-});
+  role: {
+    type: DataTypes.ENUM("owner", "member"),  // Define the role as either 'owner' or 'member'
+    allowNull: false,
+    defaultValue: "member",  // Default value for a user
+  },
+}) ;
+
 
 // Define the associations with custom foreign keys
 User.belongsToMany(Project, {
@@ -37,4 +40,5 @@ Project.belongsToMany(User, {
   foreignKey: "projectId",  // Explicitly define the foreign key name for the Project model
 });
 
-export default UserProjects;
+
+export default UserProjects

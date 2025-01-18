@@ -1,3 +1,5 @@
+import { StatusCode } from "../../enums/statusCode";
+import Errors from "../../errors/errors";
 import IJwtService, {
   DecodedJwt,
   tokenData,
@@ -23,11 +25,12 @@ export default class JwtService implements IJwtService{
         token,
         process.env.JWT_SECRET_key!
       ) as DecodedJwt;
-
+    
       return decoded;
+     
     } catch (error) {
       if (error instanceof Jwt.TokenExpiredError) {
-        return null; // Token has expired
+        throw new Errors("token Expired",StatusCode.UnAuthorized)
       } else {
         console.error("JWT Verification Error:", error);
         throw new Error("JWT Verification Error");

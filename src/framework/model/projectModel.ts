@@ -25,15 +25,7 @@ const Project = sequelize.define<ProjectInstance>("Project", {
   description: {
     type: DataTypes.TEXT,
     allowNull: true,
-  },
-  ownerId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: "Users",
-      key: "id",
-    },
-  },
+  }
 }, {
   tableName: "projects",
   timestamps: true,

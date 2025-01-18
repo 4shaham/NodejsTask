@@ -4,6 +4,8 @@ import Project from "../model/projectModel";
 
 
 
+
+
 const sequelize = new Sequelize(
     'ProjectManagment',  
     'root',
@@ -16,6 +18,8 @@ const sequelize = new Sequelize(
 
 
 export  const connectDb=async()=>{
+
+     
     sequelize.authenticate().then(() => {
         console.log('Connection has been established successfully.');
         
@@ -23,6 +27,7 @@ export  const connectDb=async()=>{
         console.error('Unable to connect to the database: ', error);
      });
      
+    
      await sequelize.sync({ force: false })
 }
 
@@ -33,7 +38,6 @@ export  const connectDb=async()=>{
 
 
 
-export default sequelize
+ export default sequelize
 
 
- 

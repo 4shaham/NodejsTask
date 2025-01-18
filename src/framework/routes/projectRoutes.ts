@@ -17,13 +17,13 @@ const projectRouter=Router()
 
 
 
-projectRouter.post("/add",authorizationMiddleware,projectController.createProject.bind(projectController))
-projectRouter.get("/getAll",authorizationMiddleware,projectController.getAllProject.bind(projectController))
-projectRouter.put("/edit/:id",authorizationMiddleware,projectController.editProject.bind(projectController))
+projectRouter.post("/add",authorizationMiddleware,projectController.createProject.bind(projectController)) // completed
+projectRouter.get("/getAll",authorizationMiddleware,projectController.getAllProject.bind(projectController)) // complete
+projectRouter.put("/edit/:projectId",authorizationMiddleware,projectController.editProject.bind(projectController))//completed
 projectRouter.get("/get/:id",authorizationMiddleware,projectController.getProject.bind(projectController))
-projectRouter.delete("/delete/:id",authorizationMiddleware,projectController.deleteProject.bind(projectController))
-projectRouter.post("/addMember/:projectId",authorizationMiddleware,projectController.addMember.bind(projectController))
-projectRouter.post("/removeMember",authorizationMiddleware,projectController.removeMember.bind(projectController))
+projectRouter.delete("/delete/:id",authorizationMiddleware,projectController.deleteProject.bind(projectController)) 
+projectRouter.post("/addMember/:projectId",authorizationMiddleware,projectController.addMember.bind(projectController)) // completed
+projectRouter.delete("/removeMember/:ProjectId",authorizationMiddleware,projectController.removeMember.bind(projectController)) // completed
 
 
 

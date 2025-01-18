@@ -91,7 +91,7 @@ async createProject(req: IRequest, res: Response,next:NextFunction): Promise<voi
 
 /**
  * @swagger
- * /api/projects/getAll:
+ * /api/project/getAll:
  *   get:
  *     summary: Get all projects for a user
  *     tags: [Projects]
@@ -171,12 +171,16 @@ async createProject(req: IRequest, res: Response,next:NextFunction): Promise<voi
 async getAllProject(req: IRequest, res: Response, next: NextFunction): Promise<void> {
     try {
 
+
+        const userId=Number(req.userId) 
+        await this.projectUsecase.getAllProjectUsecase(userId)
+        
+
         
     } catch (error) {
          next(error)
     }
 }
-
 
 /**
  * @swagger
@@ -191,25 +195,48 @@ async getAllProject(req: IRequest, res: Response, next: NextFunction): Promise<v
  *         in: path
  *         description: ID of the project to be edited
  *         required: true
- *         type: string
+ *         schema:
+ *           type: string
+ *           example: "abc123"  # Example project ID
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - name
+ *               - description
  *             properties:
  *               name:
  *                 type: string
+ *                 description: The new name of the project
  *                 example: "Updated Project Alpha"
  *               description:
  *                 type: string
+ *                 description: The new description of the project
  *                 example: "Updated description of Project Alpha."
  *     responses:
  *       200:
  *         description: Project updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Project updated successfully."
  *       400:
- *         description: Invalid userId or bad request
+ *         description: Invalid input or missing required fields
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Name and description are required."
  *       401:
  *         description: Unauthorized. Token is required or invalid.
  *         content:
@@ -253,10 +280,17 @@ async getAllProject(req: IRequest, res: Response, next: NextFunction): Promise<v
  */
 
 
+
 async editProject(req: IRequest, res: Response, next: NextFunction): Promise<void> {
     try {
 
 
+        const projectId=parseInt(req.params.projectId)
+        const {name,description}=req.body
+        const id=req.userId as number
+        console.log(projectId,name,description,id)
+        await this.projectUsecase.verifyEditProject(projectId,name,description,id)
+        res.status(StatusCode.success).json({message:"Project updated successfully"})
         
     } catch (error) {
         next(error)
@@ -408,11 +442,13 @@ async deleteProject(req: IRequest, res: Response, next: NextFunction): Promise<v
         next(error)
     }
 }
+
+
 /**
  * @swagger
- * /api/project/addMember/{projectId}:
- *   post:
- *     summary: Add multiple users to a project
+ * /api/project/{projectId}/members:
+ *   delete:
+ *     summary: Remove multiple users from a project
  *     tags: [Projects]
  *     security:
  *       - bearerAuth: []  # Indicates that this endpoint requires a JWT token
@@ -420,12 +456,12 @@ async deleteProject(req: IRequest, res: Response, next: NextFunction): Promise<v
  *       - name: projectId
  *         in: path
  *         required: true
- *         description: The ID of the project to which users are being added
+ *         description: The ID of the project from which users are being removed
  *         schema:
  *           type: string  # Assuming projectId is a string. Change if it's a number.
  *         example: "sdfd123"
  *     requestBody:
- *       description: An array of user IDs to be added to the project.
+ *       description: An array of user IDs to be removed from the project.
  *       required: true
  *       content:
  *         application/json:
@@ -435,11 +471,11 @@ async deleteProject(req: IRequest, res: Response, next: NextFunction): Promise<v
  *               userIds:
  *                 type: array
  *                 items:
- *                   type: number
+ *                   type: number  # Assuming userIds are numbers. Change if they're strings.
  *                 example: [123, 456]
  *     responses:
  *       200:
- *         description: Users added successfully
+ *         description: Users removed successfully
  *         content:
  *           application/json:
  *             schema:
@@ -447,7 +483,12 @@ async deleteProject(req: IRequest, res: Response, next: NextFunction): Promise<v
  *               properties:
  *                 message:
  *                   type: string
- *                   example: "Users added successfully."
+ *                   example: "Users removed successfully."
+ *                 removedUsers:
+ *                   type: array
+ *                   items:
+ *                     type: number
+ *                   example: [123, 456]
  *       400:
  *         description: Invalid user ID(s) or bad request
  *         content:
@@ -492,13 +533,15 @@ async deleteProject(req: IRequest, res: Response, next: NextFunction): Promise<v
 
 
 
+
 async addMember(req: IRequest, res: Response, next: NextFunction): Promise<void> {
     
     try{
 
         const projectId=parseInt(req.params.projectId)
-        const {addedUsers}=req.body
-        await this.projectUsecase.verifyAddMemeber(addedUsers,projectId)
+        const {userIds}=req.body
+        const id=req.userId as number
+        await this.projectUsecase.verifyAddMemeber(userIds,projectId,id)
         res.status(StatusCode.success).json({message:" Users added successfully"})
 
         
@@ -582,7 +625,13 @@ async addMember(req: IRequest, res: Response, next: NextFunction): Promise<void>
 
 async removeMember(req: IRequest, res: Response, next: NextFunction): Promise<void> {
     try {
-        
+          
+        const projectId=parseInt(req.params.projectId)
+        const {userIds}=req.body
+        const id=req.userId as number
+        await this.projectUsecase.verifyRemoveMember(userIds,projectId,id)
+        res.status(StatusCode.success).json({message:"removed successfully"})
+
     } catch (error) {
         next(error)
     }

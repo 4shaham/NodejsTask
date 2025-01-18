@@ -16,6 +16,9 @@ const taskRouter=Router()
 
 
 taskRouter.post("/add",taskController.addTask.bind(taskController))
+taskRouter.get("/getTask")
+taskRouter.get("/")
+
 
 
 
